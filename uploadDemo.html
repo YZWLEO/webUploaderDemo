@@ -1,0 +1,73 @@
+<!--引入CSS-->
+<meta charset='utf-8'>
+<script src="http://cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="./webuploader.css">
+
+<!--引入JS-->
+<script type="text/javascript" src="./webuploader.js"></script>
+<div id="uploader-demo"> <!--用来存放item-->
+    <div id="fileList" class="uploader-list"></div>
+    <div id="filePicker">选择图片</div>
+</div>
+    <input type="hidden" name="upfile">
+
+<script>
+    var uploader = WebUploader.create({
+        pick: {
+            id:'#filePicker',
+            multiple:false
+        },
+        method:'POST',
+        fileVal:'upfile',
+        server: 'http://a.baoxian.com/site/test',
+        auto: true,
+        sendAsBinary:true,
+        swf: './Uploader.swf',
+        fileSingleSizeLimit: 10 * 1024 * 1024,    // 10 M
+        compress: {
+            width: 980,
+            height: 1000,
+            quality: 100,
+            allowMagnify: false,
+            crop: false,
+            preserveHeaders: true
+        },
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        }
+    });
+
+    uploader.on( 'uploadProgress', function(file, percentage) {
+           console.log("上传进度条："+percentage*100+"%");
+
+    });
+
+    uploader.on( 'uploadError', function(file, reason ) {
+        console.log("失败原因："+reason);
+
+    });
+
+    uploader.on( 'fileQueued', function( file ) {
+        var list =$('#fileList');
+        uploader.makeThumb( file, function( error, src ) {
+            if(error){
+                console.log('有错误哦');
+            }else{
+                list.append('<img  src="' + src + '" />');
+            }
+        })
+
+    });
+
+    uploader.on( 'uploadSuccess', function( file,response) {
+        console.log("服务端返回：");
+        console.log(response);
+
+    });
+
+
+</script>
+
+
